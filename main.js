@@ -2,8 +2,7 @@ const table = document.getElementById('table');
 const tableBody = document.getElementById('tableBody');
 const totalCostDisplay = document.getElementById('totalCost');
 const allCheckBoxes = document.querySelectorAll('.checkboxes');
-let giftData;
-let totalCost;
+let total;
 
 async function fetchGiftData() {
   try {
@@ -17,17 +16,11 @@ async function fetchGiftData() {
 
 async function loadAPI() {
   const data = await fetchGiftData();
-  giftData = data.reduce((giftData, item) => {
-      giftData.push({id: item.id, recipient: item.recipient, name: item.name, 
-        link: item.link, priceInDollars: item.priceInDollars})
-      return giftData;
-      }, []);
-  displayGiftInfo();
-  calculateTotalCost();
-  displayTotalCost();
+  displayGiftInfo(data);
+  calculateTotalCost(data);
 };
 
-const displayGiftInfo = () => {
+const displayGiftInfo = (giftData) => {
   tableBody.innerHTML = '';
   giftData.forEach(info => {
     tableBody.innerHTML += `
@@ -35,26 +28,47 @@ const displayGiftInfo = () => {
       <td>${info.recipient}</td>
       <td><a href="${info.link}">${info.name}</a></td>
       <td>$${info.priceInDollars}</td>
-      <td><input class="checkboxes" type="checkbox" id="${info.id}" value="${info.priceInDollars}"></td>
+      <td><input class="checkboxes" type="checkbox" id=${info.id} value=${info.priceInDollars}></td>
     </tr>
     `;
   });
 }
 
-const calculateTotalCost = () => {
-  totalCost = giftData.reduce((sum, item) => {
-    sum += item.priceInDollars;
+const calculateTotalCost = (giftData) => {
+  total = giftData.reduce((sum, item) => {
+    sum += parseInt(item.priceInDollars);
     return sum;
   }, 0);
-  return totalCost;
+  totalCostDisplay.innerText = "$" + total;
 }
 
-const displayTotalCost = () => {
-  totalCostDisplay.innerText = `$${calculateTotalCost()}`;
+const reduceTotalCost = (event) => {
+  if (event.target.checked) {
+    total -= parseInt(event.target.value);
+  } else {
+    total += parseInt(event.target.value);
+  } 
+  let newTotal = total;
+  totalCostDisplay.innerText = "$" + newTotal;
 }
+
+// const reduceTotalCost = (event) => {
+//   allCheckBoxes.forEach(checkBox => {
+//     if (event.target.checked && (event.target.id === checkBox.id)) {
+//     total -= parseInt(event.target.value);
+//     } else if (!event.target.checked && (event.target.id === checkBox.id)) {
+//     total += parseInt(event.target.value);
+//     }
+//   })
+//   let newTotal = total;
+//   totalCostDisplay.innerText = "$" + newTotal;
+// }
 
 
 window.addEventListener('load', loadAPI);
-// table.addEventListener('click', (event) => {
+tableBody.addEventListener('click', (event) => {
+  reduceTotalCost(event);
+})
+// allCheckBoxes.addEventListener('change', (event) => {
 //   reduceTotalCost(event);
 // })
