@@ -15,6 +15,14 @@
       <header>
         <h1>Holiday Shopping List</h1>
         <h2>Total Cost of Gifts: <span id="totalCost">$???</span></h2>
+        <div>
+          <input type="text" for="id" placeholder="gift id" id="id">
+          <input type="text" for="recipient" placeholder="recipient name" id="recipient">
+          <input type="text" for="gift" placeholder="gift name" id="gift">
+          <input type="text" for="link" placeholder="gift link" id="link">
+          <input type="number" for="price" placeholder="price in dollars" id="price">
+          <button id="submit-btn">Submit</button>
+        </div>
       </header>
       <section>
           <table id="table">
@@ -35,7 +43,11 @@
             </tr>
             </tbody>
           </table>
-        </section>
+      </section>
+      <section>
+          <input type="number" for="delete" placeholder="gift id" id="deleteID">
+          <button id="delete-btn">Delete</button>
+      </section>
     </main>
     <script src="./main.js"></script>
   </body>
